@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Auvrey Terminal — Professionelles Trading Terminal für Krypto, Forex & Aktien. Backtesting, Paper Trading, Volume Profile, KI-Signale. Ab 20€/Monat.">
+<title>Auvrey — Professional Trading Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:   #04060d;
+  --dark:    #080c16;
+  --panel:   #0d1220;
+  --border:  #1a2538;
+  --border2: #243448;
+  --green:   #00d46a;
+  --red:     #e03048;
+  --cyan:    #00b8d4;
+  --gold:    #c8a020;
+  --text:    #8ea8c0;
+  --white:   #d0e4f4;
+  --bright:  #eaf4ff;
+  --mono:    'DM Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body:    'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, opacity 0.2s;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  position: fixed;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(0,184,212,0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease-out, width 0.2s, height 0.2s;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(4,6,13,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(26,37,56,0.8);
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 6px;
+  color: var(--bright);
+  margin-right: auto;
+}
+.nav-logo span { color: var(--cyan); }
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin-right: 40px;
+}
+.nav-links a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  padding: 8px 24px;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: none;
+  text-decoration: none;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-cta:hover {
+  background: rgba(0,184,212,0.1);
+  box-shadow: 0 0 20px rgba(0,184,212,0.2);
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated grid background */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,184,212,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,184,212,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 20s linear infinite;
+}
+@keyframes gridShift {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(60px,60px); }
+}
+
+/* Glow orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.orb1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,184,212,0.06) 0%, transparent 70%);
+  top: -200px; right: -100px;
+}
+.orb2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,212,106,0.04) 0%, transparent 70%);
+  bottom: 0; left: 200px;
+  animation-delay: -4s;
+}
+@keyframes orbFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid rgba(0,184,212,0.3);
+  background: rgba(0,184,212,0.05);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,212,106,0.4); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0,212,106,0); }
+}
+
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(72px, 10vw, 140px);
+  line-height: 0.92;
+  letter-spacing: 2px;
+  color: var(--bright);
+  margin-bottom: 8px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-title .accent { color: var(--cyan); }
+.hero-title .dim { color: rgba(234,244,255,0.15); }
+
+.hero-sub {
+  font-family: var(--display);
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: 4px;
+  color: var(--text);
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.btn-primary {
+  padding: 16px 40px;
+  background: var(--cyan);
+  color: #000;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: none;
+  display: inline-block;
+}
+.btn-primary:hover {
+  background: #00d4f0;
+  box-shadow: 0 0 40px rgba(0,184,212,0.4);
+  transform: translateY(-2px);
+}
+.btn-secondary {
+  padding: 16px 32px;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: none;
+}
+.btn-secondary:hover {
+  border-color: var(--text);
+  color: var(--white);
+}
+
+.hero-price {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  letter-spacing: 1px;
+  animation: fadeUp 0.6s 0.5s ease both;
+  margin-top: 20px;
+}
+.hero-price b { color: var(--white); }
+
+/* TERMINAL MOCKUP */
+.terminal-showcase {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 55vw;
+  max-width: 900px;
+  z-index: 2;
+  animation: fadeLeft 0.8s 0.3s ease both;
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateY(-50%) translateX(60px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+.terminal-frame {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgba(0,184,212,0.05),
+    0 40px 120px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  overflow: hidden;
+  position: relative;
+}
+.terminal-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.4;
+}
+.t-bar {
+  height: 28px;
+  background: #060a12;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+}
+.t-dot { width: 8px; height: 8px; border-radius: 50%; }
+.t-title {
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #2a3848;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.t-toolbar {
+  height: 28px;
+  background: #070b14;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 2px;
+  overflow: hidden;
+}
+.t-tbtn {
+  padding: 3px 8px;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: #2a3848;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.t-tbtn.active { color: #00b8d4; border-bottom: 1px solid #00b8d4; }
+.t-tbtn.green  { color: #00d46a; }
+
+/* Chart area */
+.t-body {
+  display: flex;
+  height: 320px;
+}
+.t-chart {
+  flex: 1;
+  background: #04060d;
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+.t-sym {
+  position: absolute;
+  top: 8px; left: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #eaf4ff;
+  font-weight: 500;
+  letter-spacing: 2px;
+  z-index: 3;
+}
+.t-px {
+  position: absolute;
+  top: 8px; right: 50px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  z-index: 3;
+  animation: priceTick 2s ease-in-out infinite;
+}
+@keyframes priceTick {
+  0%,100% { color: #00d46a; }
+  50% { color: #00e87a; }
+}
+.t-ohlc {
+  position: absolute;
+  top: 28px; left: 12px;
+  font-family: var(--mono);
+  font-size: 8px;
+  color: #2a3848;
+  letter-spacing: 1px;
+  z-index: 3;
+}
+
+/* SVG Chart */
+.t-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Volume Profile bars */
+.vp-bars {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px 2px;
+  gap: 1px;
+}
+.vp-bar {
+  height: 4px;
+  background: rgba(0,184,212,0.1);
+  border-radius: 1px;
+  transition: width 0.5s;
+}
+.vp-bar.poc { background: rgba(200,160,32,0.5); }
+.vp-bar.va  { background: rgba(0,184,212,0.25); }
+
+/* Grid lines */
+.t-grid-h {
+  position: absolute;
+  left: 0; right: 40px;
+  height: 1px;
+  background: rgba(26,37,56,0.6);
+}
+.t-price-tag {
+  position: absolute;
+  right: 0;
+  width: 42px;
+  font-family: var(--mono);
+  font-size: 7px;
+  color: #2a3848;
+  text-align: right;
+  padding-right: 3px;
+  transform: translateY(-50%);
+}
+.t-cur-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(0,212,106,0.2);
+  border-top: 1px dashed rgba(0,212,106,0.15);
+}
+.t-cur-tag {
+  position: absolute;
+  right: 0;
+  background: #00d46a;
+  color: #000;
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 500;
+  padding: 1px 3px;
+  transform: translateY(-50%);
+}
+
+/* Right panel */
+.t-right {
+  width: 160px;
+  background: #060a12;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.t-acct {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.t-acct-lbl { font-family: var(--mono); font-size: 7px; color: #2a3848; letter-spacing: 1.5px; }
+.t-acct-val { font-family: var(--mono); font-size: 11px; font-weight: 500; color: #00d46a; }
+.t-btns {
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.t-buy {
+  width: 100%; height: 24px;
+  background: rgba(0,212,106,0.12);
+  border: 1px solid rgba(0,212,106,0.3);
+  color: #00d46a;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.t-sell {
+  width: 100%; height: 24px;
+  background: rgba(224,48,72,0.12);
+  border: 1px solid rgba(224,48,72,0.3);
+  color: #e03048;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.t-ob { flex: 1; overflow: hidden; }
+.t-ob-row {
+  height: 14px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-family: var(--mono);
+  font-size: 7px;
+  position: relative;
+  justify-content: space-between;
+}
+.t-ob-row.ask .t-ob-p { color: #e03048; }
+.t-ob-row.bid .t-ob-p { color: #00d46a; }
+.t-ob-row .t-ob-s { color: #2a3848; }
+.t-ob-bar {
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  opacity: 0.06;
+}
+.t-ob-row.ask .t-ob-bar { background: #e03048; }
+.t-ob-row.bid .t-ob-bar { background: #00d46a; }
+.t-ob-mid {
+  height: 16px;
+  background: #0a0f1a;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: #d0e4f4;
+}
+
+/* Status bar */
+.t-status {
+  height: 16px;
+  background: #040810;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 12px;
+}
+.t-st {
+  font-family: var(--mono);
+  font-size: 7px;
+  color: #1a2538;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.5px;
+}
+.t-dot2 {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #00d46a;
+  animation: pulse 2s infinite;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* STATS BAR */
+.stats-bar {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  position: relative;
+  z-index: 2;
+}
+.stat {
+  padding: 0 40px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--display);
+  font-size: 48px;
+  letter-spacing: 2px;
+  color: var(--bright);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-num .acc { color: var(--cyan); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+/* FEATURES */
+.features {
+  padding: 120px 48px;
+  position: relative;
+}
+.section-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(48px, 6vw, 80px);
+  letter-spacing: 2px;
+  color: var(--bright);
+  line-height: 1;
+  margin-bottom: 80px;
+}
+.section-title .dim { color: rgba(234,244,255,0.2); }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.feat-card {
+  background: var(--dark);
+  padding: 40px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+.feat-card:hover { background: var(--panel); }
+.feat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.feat-card:hover::before { opacity: 0.3; }
+
+.feat-icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+}
+.feat-num {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-family: var(--display);
+  font-size: 80px;
+  color: rgba(255,255,255,0.02);
+  line-height: 1;
+  pointer-events: none;
+}
+.feat-title {
+  font-family: var(--display);
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.feat-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.feat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.feat-tag {
+  padding: 3px 8px;
+  border: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+.feat-tag.highlight {
+  border-color: rgba(0,184,212,0.3);
+  color: var(--cyan);
+  background: rgba(0,184,212,0.05);
+}
+
+/* BACKTEST HIGHLIGHT */
+.bt-section {
+  padding: 120px 48px;
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.bt-section::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,212,106,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.bt-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.bt-mockup {
+  background: #04060d;
+  border: 1px solid var(--border);
+  padding: 20px;
+  position: relative;
+}
+.bt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.bt-title { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--cyan); text-transform: uppercase; }
+.bt-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.bt-ctrl {
+  padding: 4px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+.bt-ctrl.active { border-color: rgba(0,212,106,0.4); color: var(--green); }
+
+/* Equity curve */
+.bt-chart-area {
+  height: 120px;
+  background: #020408;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.bt-chart-area svg { width: 100%; height: 100%; }
+
+.bt-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.bt-stat {
+  background: var(--panel);
+  padding: 10px 12px;
+}
+.bt-stat-val { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.bt-stat-val.pos { color: var(--green); }
+.bt-stat-val.neg { color: var(--red); }
+.bt-stat-val.neu { color: var(--white); }
+.bt-stat-lbl { font-family: var(--mono); font-size: 7px; color: #2a3848; letter-spacing: 1px; margin-top: 2px; }
+
+.bt-features { list-style: none; }
+.bt-features li {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(26,37,56,0.6);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--text);
+}
+.bt-features li::before {
+  content: '→';
+  color: var(--green);
+  font-family: var(--mono);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.bt-features li b { color: var(--white); display: block; margin-bottom: 2px; }
+
+/* PRICING */
+.pricing {
+  padding: 120px 48px;
+  text-align: center;
+}
+.price-card {
+  display: inline-block;
+  background: var(--dark);
+  border: 1px solid var(--border2);
+  padding: 64px 80px;
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+}
+.price-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.price-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border: 1px solid rgba(0,212,106,0.3);
+  background: rgba(0,212,106,0.06);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.price-amount {
+  font-family: var(--display);
+  font-size: 96px;
+  letter-spacing: 2px;
+  color: var(--bright);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.price-amount .sym { font-size: 48px; color: var(--cyan); vertical-align: super; }
+.price-period {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+.price-features {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 48px;
+}
+.price-features li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(26,37,56,0.6);
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.price-features li::before {
+  content: '✓';
+  color: var(--green);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.price-features li b { color: var(--white); }
+.price-btn {
+  display: block;
+  padding: 18px;
+  background: var(--cyan);
+  color: #000;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: none;
+}
+.price-btn:hover {
+  background: #00d4f0;
+  box-shadow: 0 0 60px rgba(0,184,212,0.3);
+}
+.price-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text);
+  letter-spacing: 1px;
+  margin-top: 16px;
+}
+
+/* RISK DISCLAIMER */
+.disclaimer {
+  padding: 40px 48px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.disclaimer p {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #1a2538;
+  letter-spacing: 0.5px;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* FOOTER */
+footer {
+  background: #020408;
+  border-top: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-logo {
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 5px;
+  color: rgba(234,244,255,0.3);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #1a2538;
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: #1a2538;
+  letter-spacing: 1px;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+@media (max-width: 1100px) {
+  .terminal-showcase { display: none; }
+  .hero-content { max-width: 100%; }
+  .hero-title { font-size: 80px; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .bt-inner { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-title { font-size: 56px; }
+  .features { padding: 60px 20px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .bt-section { padding: 60px 20px; }
+  .pricing { padding: 60px 20px; }
+  .price-card { padding: 40px 24px; }
+  .stats-bar { grid-template-columns: 1fr 1fr; padding: 20px; }
+  footer { flex-direction: column; gap: 20px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AUVREY<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#backtest">Backtest</a></li>
+    <li><a href="#pricing">Preise</a></li>
+    <li><a href="mailto:support@auvrey.de">Support</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">Jetzt starten</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Professionelles Trading Terminal</div>
+    <h1 class="hero-title">
+      AUVREY<br>
+      <span class="accent">TERMINAL</span>
+    </h1>
+    <p class="hero-sub">TRADE LIKE A PRO</p>
+    <p class="hero-desc">
+      Das einzige Terminal das du brauchst. Krypto, Forex und Aktien in einer Oberfläche — mit Backtesting, Paper Trading, KI-Signalen und institutionellen Analysetools.
+    </p>
+    <div class="hero-btns">
+      <a href="#pricing" class="btn-primary">Jetzt kaufen — 20€/Monat</a>
+      <a href="#features" class="btn-secondary">Features ansehen</a>
+    </div>
+    <p class="hero-price">Ab <b>20€/Monat</b> · Sofort-Download · Kein Abo-Zwang</p>
+  </div>
+
+  <!-- Terminal Mockup -->
+  <div class="terminal-showcase">
+    <div class="terminal-frame">
+      <!-- Title bar -->
+      <div class="t-bar">
+        <div class="t-dot" style="background:#e03048"></div>
+        <div class="t-dot" style="background:#c8a020"></div>
+        <div class="t-dot" style="background:#00d46a"></div>
+        <div class="t-title">AUVREY TERMINAL — BTC/USDT — H4</div>
+      </div>
+      <!-- Toolbar -->
+      <div class="t-toolbar">
+        <div class="t-tbtn active">📊 PAPER</div>
+        <div class="t-tbtn">BACKTEST</div>
+        <div class="t-tbtn">FVG SCAN</div>
+        <div class="t-tbtn green">SIGNALE</div>
+        <div class="t-tbtn">SCREENER</div>
+        <div class="t-tbtn">MULTI</div>
+        <div class="t-tbtn">ALERTS</div>
+        <div class="t-tbtn">📓 JOURNAL</div>
+        <div class="t-tbtn">⚠ RISIKO</div>
+        <div class="t-tbtn">📅 KALENDER</div>
+        <div class="t-tbtn">⟨/⟩ IND</div>
+      </div>
+      <!-- Body -->
+      <div class="t-body">
+        <!-- Chart -->
+        <div class="t-chart">
+          <div class="t-sym">BTC/USDT · H4</div>
+          <div class="t-px" id="mockPx">94,218.40</div>
+          <div class="t-ohlc">O: 92,840 · H: <span style="color:#00d46a">94,620</span> · L: <span style="color:#e03048">92,180</span> · C: 94,218</div>
+
+          <!-- Grid -->
+          <div class="t-grid-h" style="top:10%"><div class="t-price-tag" style="top:0">95,800</div></div>
+          <div class="t-grid-h" style="top:25%"><div class="t-price-tag" style="top:0">95,200</div></div>
+          <div class="t-grid-h" style="top:40%"><div class="t-price-tag" style="top:0">94,600</div></div>
+          <div class="t-grid-h" style="top:55%"><div class="t-price-tag" style="top:0">94,000</div></div>
+          <div class="t-grid-h" style="top:70%"><div class="t-price-tag" style="top:0">93,400</div></div>
+          <div class="t-grid-h" style="top:85%"><div class="t-price-tag" style="top:0">92,800</div></div>
+
+          <!-- Current price line -->
+          <div class="t-cur-line" style="top:43%">
+            <div class="t-cur-tag" style="right:42px;top:-5px">94,218</div>
+          </div>
+
+          <!-- FVG zone -->
+          <div style="position:absolute;top:35%;height:7%;left:0;right:42px;background:rgba(0,184,212,0.04);border-top:1px dashed rgba(0,184,212,0.15);border-bottom:1px dashed rgba(0,184,212,0.15);"></div>
+
+          <!-- SVG candles + indicators -->
+          <svg class="t-svg" viewBox="0 0 540 320" preserveAspectRatio="none">
+            <!-- EMA 21 -->
+            <polyline fill="none" stroke="rgba(0,184,212,0.4)" stroke-width="1"
+              points="0,200 30,195 60,188 90,192 120,184 150,178 180,174 210,176 240,170 270,165 300,168 330,162 360,156 390,158 420,152 450,148 480,150 510,146 540,143"/>
+            <!-- EMA 50 -->
+            <polyline fill="none" stroke="rgba(224,48,72,0.25)" stroke-width="1"
+              points="0,220 30,217 60,212 90,215 120,210 150,205 180,202 210,204 240,200 270,196 300,198 330,194 360,190 390,192 420,188 450,185 480,186 510,183 540,181"/>
+            <!-- Volume bars -->
+            <g opacity="0.2">
+              <rect x="4"  y="290" width="5" height="18" fill="#00d46a"/>
+              <rect x="14" y="282" width="5" height="26" fill="#e03048"/>
+              <rect x="24" y="278" width="5" height="30" fill="#00d46a"/>
+              <rect x="34" y="285" width="5" height="23" fill="#e03048"/>
+              <rect x="44" y="272" width="5" height="36" fill="#00d46a"/>
+              <rect x="54" y="280" width="5" height="28" fill="#00d46a"/>
+              <rect x="64" y="288" width="5" height="20" fill="#e03048"/>
+              <rect x="74" y="275" width="5" height="33" fill="#00d46a"/>
+              <rect x="84" y="265" width="5" height="43" fill="#00d46a"/>
+              <rect x="94" y="270" width="5" height="38" fill="#e03048"/>
+              <rect x="104" y="258" width="5" height="50" fill="#00d46a"/>
+              <rect x="114" y="275" width="5" height="33" fill="#00d46a"/>
+              <rect x="124" y="260" width="5" height="48" fill="#e03048"/>
+              <rect x="134" y="252" width="5" height="56" fill="#00d46a"/>
+              <rect x="144" y="268" width="5" height="40" fill="#00d46a"/>
+            </g>
+            <!-- Candles -->
+            <line x1="10"  y1="165" x2="10"  y2="215" stroke="#e03048" stroke-width="1"/>
+            <rect x="7"   y="175" width="6" height="26" fill="#e03048"/>
+            <line x1="22"  y1="158" x2="22"  y2="205" stroke="#00d46a" stroke-width="1"/>
+            <rect x="19"  y="166" width="6" height="28" fill="#00d46a" opacity="0.9"/>
+            <line x1="34"  y1="150" x2="34"  y2="198" stroke="#e03048" stroke-width="1"/>
+            <rect x="31"  y="158" width="6" height="24" fill="#e03048"/>
+            <line x1="46"  y1="142" x2="46"  y2="195" stroke="#00d46a" stroke-width="1"/>
+            <rect x="43"  y="150" width="6" height="34" fill="#00d46a" opacity="0.9"/>
+            <line x1="58"  y1="148" x2="58"  y2="192" stroke="#e03048" stroke-width="1"/>
+            <rect x="55"  y="156" width="6" height="24" fill="#e03048"/>
+            <line x1="70"  y1="140" x2="70"  y2="185" stroke="#00d46a" stroke-width="1"/>
+            <rect x="67"  y="147" width="6" height="26" fill="#00d46a" opacity="0.9"/>
+            <line x1="82"  y1="132" x2="82"  y2="178" stroke="#e03048" stroke-width="1"/>
+            <rect x="79"  y="140" width="6" height="28" fill="#e03048"/>
+            <line x1="94"  y1="124" x2="94"  y2="172" stroke="#00d46a" stroke-width="1"/>
+            <rect x="91"  y="132" width="6" height="30" fill="#00d46a" opacity="0.9"/>
+            <line x1="106" y1="116" x2="106" y2="168" stroke="#00d46a" stroke-width="1"/>
+            <rect x="103" y="124" width="6" height="34" fill="#00d46a" opacity="0.9"/>
+            <line x1="118" y1="120" x2="118" y2="164" stroke="#e03048" stroke-width="1"/>
+            <rect x="115" y="128" width="6" height="26" fill="#e03048"/>
+            <line x1="130" y1="112" x2="130" y2="158" stroke="#00d46a" stroke-width="1"/>
+            <rect x="127" y="120" width="6" height="28" fill="#00d46a" opacity="0.9"/>
+            <line x1="142" y1="106" x2="142" y2="152" stroke="#e03048" stroke-width="1"/>
+            <rect x="139" y="113" width="6" height="28" fill="#e03048"/>
+            <line x1="154" y1="96"  x2="154" y2="148" stroke="#00d46a" stroke-width="1.5"/>
+            <rect x="151" y="104" width="6" height="34" fill="#00d46a"/>
+            <!-- Trade arrow -->
+            <polygon points="154,148 150,160 158,160" fill="#00d46a" opacity="0.8"/>
+            <polygon points="130,158 126,170 134,170" fill="#e03048" opacity="0.8"/>
+          </svg>
+
+          <!-- Volume Profile -->
+          <div style="position:absolute;right:42px;top:5%;bottom:5%;width:36px;display:flex;flex-direction:column;gap:1px;justify-content:center;">
+            <div style="height:3px;background:rgba(0,184,212,0.08);width:8px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.12);width:12px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.15);width:16px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.2);width:20px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.25);width:26px"></div>
+            <div style="height:3px;background:rgba(200,160,32,0.6);width:36px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.3);width:30px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.25);width:24px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.18);width:18px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.12);width:12px"></div>
+            <div style="height:3px;background:rgba(0,184,212,0.08);width:8px"></div>
+          </div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="t-right">
+          <div class="t-acct">
+            <div class="t-acct-lbl">EQUITY</div>
+            <div class="t-acct-val">$10,482.30</div>
+            <div style="font-size:7px;color:#00d46a;font-family:'DM Mono',monospace;margin-top:2px">+$482.30 heute</div>
+          </div>
+          <div class="t-btns">
+            <div class="t-buy">▲ LONG</div>
+            <div class="t-sell">▼ SHORT</div>
+          </div>
+          <div class="t-ob">
+            <div class="t-ob-row ask"><div class="t-ob-bar" style="width:28%"></div><div class="t-ob-p">94,480</div><div class="t-ob-s">1.84</div></div>
+            <div class="t-ob-row ask"><div class="t-ob-bar" style="width:44%"></div><div class="t-ob-p">94,360</div><div class="t-ob-s">2.34</div></div>
+            <div class="t-ob-row ask"><div class="t-ob-bar" style="width:18%"></div><div class="t-ob-p">94,260</div><div class="t-ob-s">0.98</div></div>
+            <div class="t-ob-mid" id="mockMid">94,218</div>
+            <div class="t-ob-row bid"><div class="t-ob-bar" style="width:50%"></div><div class="t-ob-p">94,200</div><div class="t-ob-s">2.65</div></div>
+            <div class="t-ob-row bid"><div class="t-ob-bar" style="width:32%"></div><div class="t-ob-p">94,140</div><div class="t-ob-s">1.82</div></div>
+            <div class="t-ob-row bid"><div class="t-ob-bar" style="width:65%"></div><div class="t-ob-p">94,080</div><div class="t-ob-s">3.94</div></div>
+            <div class="t-ob-row bid"><div class="t-ob-bar" style="width:22%"></div><div class="t-ob-p">93,960</div><div class="t-ob-s">1.10</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Status -->
+      <div class="t-status">
+        <div class="t-st"><div class="t-dot2"></div>LIVE</div>
+        <div class="t-st"><div class="t-dot2"></div>BINANCE WS</div>
+        <div class="t-st" style="margin-left:auto;color:#1a3050">AUVREY PRO · bennet77</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat">
+    <div class="stat-num">20<span class="acc">+</span></div>
+    <div class="stat-label">Indikatoren</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5<span class="acc">+</span></div>
+    <div class="stat-label">Asset Klassen</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">48<span class="acc">h</span></div>
+    <div class="stat-label">Offline-Toleranz</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0<span class="acc">€</span></div>
+    <div class="stat-label">Versteckte Gebühren</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="reveal">
+    <div class="section-tag">Was Auvrey kann</div>
+    <h2 class="section-title">ALLES WAS DU<br><span class="dim">WIRKLICH</span> BRAUCHST</h2>
+  </div>
+
+  <div class="features-grid reveal">
+
+    <div class="feat-card">
+      <div class="feat-num">01</div>
+      <span class="feat-icon">📊</span>
+      <div class="feat-title">PAPER TRADING</div>
+      <p class="feat-desc">Teste deine Strategien mit echten Marktdaten ohne echtes Geld zu riskieren. Mehrere Paper-Accounts, vollständiges P&L-Tracking und automatische Journal-Einträge.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Echtzeit-Preise</span>
+        <span class="feat-tag highlight">P&L Live</span>
+        <span class="feat-tag">SL / TP</span>
+        <span class="feat-tag">Multi-Positionen</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">02</div>
+      <span class="feat-icon">⏪</span>
+      <div class="feat-title">BACKTESTING</div>
+      <p class="feat-desc">Simuliere Strategien auf historischen Daten. Wähle exakt den Zeitraum mit dem Kalender, bestimme Startkapital und spiele die Kerzen Bar für Bar durch.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Datum-Auswahl</span>
+        <span class="feat-tag highlight">Bar-für-Bar</span>
+        <span class="feat-tag">Sharpe Ratio</span>
+        <span class="feat-tag">Equity Kurve</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">03</div>
+      <span class="feat-icon">🔍</span>
+      <div class="feat-title">FVG SCANNER</div>
+      <p class="feat-desc">Automatische Erkennung von Fair Value Gaps über alle Assets und Timeframes. Quality Score, Fill-Prozentsatz und direkte Navigation zum Chart.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Auto-Erkennung</span>
+        <span class="feat-tag highlight">Multi-TF</span>
+        <span class="feat-tag">Bull / Bear</span>
+        <span class="feat-tag">Quality Score</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">04</div>
+      <span class="feat-icon">📈</span>
+      <div class="feat-title">VOLUME PROFILE</div>
+      <p class="feat-desc">Sieh wo die Big Player gehandelt haben. Point of Control (POC) und Value Area direkt im Chart visualisiert — der Preis kehrt fast immer zum POC zurück.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">POC</span>
+        <span class="feat-tag highlight">Value Area 70%</span>
+        <span class="feat-tag">Live-Update</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">05</div>
+      <span class="feat-icon">⚡</span>
+      <div class="feat-title">KI-SIGNALE</div>
+      <p class="feat-desc">Technische Signale in Echtzeit: RSI, EMA Crossover, Bollinger Band Breakouts, Pattern Recognition. Schulter-Kopf-Schulter, Flaggen, Dreiecke — automatisch erkannt.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Pattern Recognition</span>
+        <span class="feat-tag highlight">Echtzeit</span>
+        <span class="feat-tag">20+ Indikatoren</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">06</div>
+      <span class="feat-icon">⚠</span>
+      <div class="feat-title">RISK MANAGEMENT</div>
+      <p class="feat-desc">Positionsgrössen-Rechner mit 1% Risiko-Regel. Kill Switch für sofortiges Schliessen aller Positionen. Tägliches Verlust-Limit das den Handel automatisch stoppt.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Kill Switch</span>
+        <span class="feat-tag highlight">Drawdown Limit</span>
+        <span class="feat-tag">R:R Rechner</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">07</div>
+      <span class="feat-icon">📓</span>
+      <div class="feat-title">TRADING JOURNAL</div>
+      <p class="feat-desc">Alle Trades werden automatisch geloggt. Füge Notizen, Setup-Beschreibungen und Emotionen hinzu. Detaillierte Statistiken, Equity-Kurve und CSV-Export.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Auto-Logging</span>
+        <span class="feat-tag">Win Rate</span>
+        <span class="feat-tag">Profit Faktor</span>
+        <span class="feat-tag">CSV Export</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">08</div>
+      <span class="feat-icon">🌐</span>
+      <div class="feat-title">NEWS & SENTIMENT</div>
+      <p class="feat-desc">Echtzeit-Nachrichten mit KI-Sentiment-Analyse. Wirtschaftskalender mit Fed, CPI und NFP Events direkt integriert. Whale Alerts für On-Chain Daten.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Sentiment Score</span>
+        <span class="feat-tag highlight">Wirtschaftskalender</span>
+        <span class="feat-tag">Echtzeit</span>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-num">09</div>
+      <span class="feat-icon">🔧</span>
+      <div class="feat-title">INDIKATOR STUDIO</div>
+      <p class="feat-desc">Erstelle eigene Indikatoren mit JavaScript — ähnlich wie Pine Script auf TradingView. Veröffentliche sie im Marktplatz oder nutze fertige Community-Indikatoren.</p>
+      <div class="feat-tags">
+        <span class="feat-tag highlight">Custom Code</span>
+        <span class="feat-tag highlight">Marktplatz</span>
+        <span class="feat-tag">VWAP / SuperTrend</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BACKTEST HIGHLIGHT -->
+<section class="bt-section" id="backtest">
+  <div class="bt-inner reveal">
+    <div>
+      <div class="section-tag">Backtesting Engine</div>
+      <h2 class="section-title" style="font-size:clamp(40px,5vw,64px);margin-bottom:32px">TESTE BEVOR<br>DU RISKIERST</h2>
+      <p style="font-size:15px;color:var(--text);line-height:1.8;margin-bottom:40px;max-width:480px">
+        Wähle exakt welchen Zeitraum du testen willst — von einzelnen Wochen bis zu Jahren. Spiele die Charts Bar für Bar durch wie ein echter Trade, mit deinem eigenen Startkapital.
+      </p>
+      <ul class="bt-features">
+        <li>
+          <div><b>Datum-Auswahl mit Kalender</b>Starte den Backtest an jedem beliebigen historischen Datum — perfekt für Event-basierte Strategien wie Fed-Meetings.</div>
+        </li>
+        <li>
+          <div><b>Bar-für-Bar Simulation</b>Klick dich durch jeden einzelnen Balken. Setze Stop-Loss, Take-Profit und öffne mehrere Positionen gleichzeitig.</div>
+        </li>
+        <li>
+          <div><b>Vollständige Statistiken</b>Win Rate, Profit Faktor, Sharpe Ratio, Maximum Drawdown und Equity-Kurve nach dem Test.</div>
+        </li>
+        <li>
+          <div><b>Echte Marktdaten</b>Keine synthetischen Daten — ausschließlich echte historische OHLCV-Daten von Binance und Polygon.io.</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Backtest mockup -->
+    <div class="bt-mockup">
+      <div class="bt-header">
+        <div class="bt-title">Backtest Engine</div>
+        <div style="margin-left:auto;font-family:'DM Mono',monospace;font-size:8px;color:#00d46a">● 847 Bars geladen</div>
+      </div>
+      <div class="bt-controls">
+        <div class="bt-ctrl">BTC/USDT</div>
+        <div class="bt-ctrl">H1</div>
+        <div class="bt-ctrl active">01.01.2024 → 31.03.2024</div>
+        <div class="bt-ctrl">Kapital: $10,000</div>
+      </div>
+      <div class="bt-chart-area">
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+          <!-- Equity curve -->
+          <defs>
+            <linearGradient id="eq" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#00d46a" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#00d46a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,90 L40,85 L80,75 L100,80 L130,65 L160,55 L180,60 L210,45 L240,35 L260,40 L290,25 L320,20 L350,15 L380,10 L400,8 L400,120 L0,120 Z"
+            fill="url(#eq)"/>
+          <path d="M0,90 L40,85 L80,75 L100,80 L130,65 L160,55 L180,60 L210,45 L240,35 L260,40 L290,25 L320,20 L350,15 L380,10 L400,8"
+            fill="none" stroke="#00d46a" stroke-width="1.5"/>
+          <!-- Drawdown region -->
+          <path d="M80,75 L100,80 L130,65" fill="none" stroke="#e03048" stroke-width="1" stroke-dasharray="3,2"/>
+          <path d="M180,60 L210,45" fill="none" stroke="#e03048" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="bt-stats">
+        <div class="bt-stat">
+          <div class="bt-stat-val pos">+42.8%</div>
+          <div class="bt-stat-lbl">GESAMT RETURN</div>
+        </div>
+        <div class="bt-stat">
+          <div class="bt-stat-val neu">68.4%</div>
+          <div class="bt-stat-lbl">WIN RATE</div>
+        </div>
+        <div class="bt-stat">
+          <div class="bt-stat-val neg">-8.2%</div>
+          <div class="bt-stat-lbl">MAX DRAWDOWN</div>
+        </div>
+        <div class="bt-stat">
+          <div class="bt-stat-val neu">2.14</div>
+          <div class="bt-stat-lbl">PROFIT FAKTOR</div>
+        </div>
+        <div class="bt-stat">
+          <div class="bt-stat-val neu">1.87</div>
+          <div class="bt-stat-lbl">SHARPE RATIO</div>
+        </div>
+        <div class="bt-stat">
+          <div class="bt-stat-val neu">127</div>
+          <div class="bt-stat-lbl">TRADES</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="reveal">
+    <div class="section-tag">Preise</div>
+    <h2 class="section-title">EIN PLAN.<br><span class="dim">ALLES INKLUSIVE.</span></h2>
+
+    <div class="price-card">
+      <div class="price-badge">Auvrey Pro</div>
+      <div class="price-amount"><span class="sym">€</span>20</div>
+      <div class="price-period">Pro Monat · Monatlich kündbar</div>
+      <ul class="price-features">
+        <li><b>Vollständiger Terminalzugang</b></li>
+        <li>Paper Trading mit Echtzeit-Daten</li>
+        <li>Backtesting mit Datum-Auswahl</li>
+        <li>FVG Scanner & KI-Signale</li>
+        <li>Volume Profile & Anchored VWAP</li>
+        <li>Trading Journal & Statistiken</li>
+        <li>Risk Calculator & Kill Switch</li>
+        <li>Wirtschaftskalender</li>
+        <li>Indikator Studio (Custom Code)</li>
+        <li>News Sentiment & Screener</li>
+        <li><b>Krypto, Forex & Aktien</b></li>
+        <li>Updates inklusive</li>
+        <li>Support via E-Mail</li>
+      </ul>
+      <a href="https://gumroad.com" class="price-btn" target="_blank">Jetzt kaufen — 20€/Monat</a>
+      <p class="price-note">Nach Zahlung erhältst du deinen Lizenzschlüssel per E-Mail</p>
+    </div>
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  <p>
+    ⚠ Risikohinweis: Auvrey Terminal ist ein Analyse- und Bildungswerkzeug. Es stellt keine Anlage- oder Handelsberatung dar.
+    Trading in Finanzinstrumenten birgt erhebliche Verlustrisiken bis hin zum Totalverlust des eingesetzten Kapitals.
+    Vergangene Backtest-Ergebnisse sind keine Garantie für zukünftige Gewinne. Die Nutzung erfolgt auf eigene Verantwortung.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AUVREY</div>
+  <ul class="footer-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Preise</a></li>
+    <li><a href="mailto:support@auvrey.de">Support</a></li>
+    <li><a href="#">Impressum</a></li>
+    <li><a href="#">Datenschutz</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Auvrey · auvrey.de</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+function animRing(){
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,[class*="btn"]').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width='48px'; ring.style.height='48px';
+    ring.style.borderColor='rgba(0,184,212,0.6)';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width='32px'; ring.style.height='32px';
+    ring.style.borderColor='rgba(0,184,212,0.3)';
+  });
+});
+
+// Animate mock price
+let p = 94218.40;
+setInterval(()=>{
+  p += (Math.random()-0.48)*8;
+  const f = p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('mockPx').textContent = f;
+  document.getElementById('mockMid').textContent = p.toFixed(2);
+}, 800);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      e.target.style.transitionDelay = e.target.dataset.delay || '0s';
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach((el,i) => {
+  el.dataset.delay = (i * 0.05) + 's';
+  observer.observe(el);
+});
+
+// Stagger feature cards
+document.querySelectorAll('.feat-card').forEach((card,i) => {
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(20px)';
+  card.style.transition = `opacity 0.5s ${i*0.08}s ease, transform 0.5s ${i*0.08}s ease`;
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting) {
+      card.style.opacity='1'; card.style.transform='translateY(0)';
+      obs.disconnect();
+    }
+  }, {threshold:0.1});
+  obs.observe(card);
+});
+</script>
+</body>
+</html>
