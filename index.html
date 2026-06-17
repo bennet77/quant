@@ -542,22 +542,15 @@ h2{
 /* ---- interactive affordances (native cursor) ---- */
 a,button,.btn,.fn,.rail__item,.pillar__link{cursor:pointer}
 
-/* ---- cinematic boot log ---- */
-.boot{width:min(560px,86vw);text-align:left}
-.boot__brand{font-family:var(--head);font-weight:700;font-size:24px;letter-spacing:.32em;
-  color:var(--txt);margin-bottom:6px}
-.boot__brand .diamond{margin-right:6px}
-.boot__sub{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--txt-3);
-  margin-bottom:22px}
-.boot__log{font-family:var(--mono);font-size:12px;line-height:1.85;min-height:200px;color:var(--txt-2)}
-.boot__log .ok{color:var(--green)}
-.boot__log .amb{color:var(--amber)}
-.boot__log .ln{white-space:pre;opacity:0}
-.boot__log .ln.show{opacity:1}
-.boot__bar{height:2px;background:#15181f;border-radius:2px;overflow:hidden;margin-top:20px}
-.boot__bar span{display:block;height:100%;width:0;background:var(--amber);
-  box-shadow:0 0 12px var(--amber-glow);transition:width .2s linear}
-.boot__pct{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--txt-3);margin-top:10px}
+/* ---- minimal loader ---- */
+.loader{display:flex;flex-direction:column;align-items:center;gap:20px}
+.loader__logo{font-family:var(--head);font-weight:700;font-size:24px;letter-spacing:.34em;
+  color:var(--txt);opacity:0;animation:loaderIn .5s var(--ease) forwards}
+.loader__logo .diamond{margin-right:6px}
+.loader__bar{width:160px;height:1px;background:#1b1f29;overflow:hidden}
+.loader__bar span{display:block;height:100%;width:0;background:var(--amber);
+  box-shadow:0 0 10px var(--amber-glow);transition:width .18s linear}
+@keyframes loaderIn{to{opacity:1}}
 
 /* ---- section progress rail ---- */
 .rail{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:55;
@@ -644,14 +637,11 @@ a,button,.btn,.fn,.rail__item,.pillar__link{cursor:pointer}
 </head>
 <body>
 
-<!-- ===== CINEMATIC BOOT ===== -->
+<!-- ===== MINIMAL LOADER ===== -->
 <div class="preloader" id="preloader">
-  <div class="boot">
-    <div class="boot__brand"><span class="diamond">◆</span>AUVREY</div>
-    <div class="boot__sub">QUANT TRADING TERMINAL · BOOT SEQUENCE</div>
-    <div class="boot__log" id="bootLog"></div>
-    <div class="boot__bar"><span id="preloaderFill"></span></div>
-    <div class="boot__pct" id="bootPct">0%</div>
+  <div class="loader">
+    <div class="loader__logo"><span class="diamond">◆</span> AUVREY</div>
+    <div class="loader__bar"><span id="preloaderFill"></span></div>
   </div>
 </div>
 
@@ -1482,42 +1472,15 @@ const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYe
    ===================================================================== */
 const pre = $('#preloader');
 const fill = $('#preloaderFill');
-const pctEl = $('#bootPct');
-const logEl = $('#bootLog');
-const bootLines = [
-  ['AUVREY TERMINAL v0  ·  cold boot', '', 'amb'],
-  ['> mounting market data feed ......... ', 'OK', 'ok'],
-  ['> binance  rest + websocket ......... ', 'CONNECTED', 'ok'],
-  ['> macro-quant-desk .................. ', '15 PANELS', 'amb'],
-  ['> ict engine · fvg / ob / liquidity . ', 'READY', 'ok'],
-  ['> visual backtester ................. ', 'READY', 'ok'],
-  ['> trade journal ..................... ', 'SYNCED', 'ok'],
-  ['> risk cockpit · kill-switch ........ ', 'ARMED', 'amb'],
-  ['> regime model · roro / rates / vix . ', 'NEUTRAL', 'ok'],
-  ['', '', ''],
-  ['  SYSTEM READY', '', 'amb'],
-];
-let li = 0;
-function bootStep() {
-  if (li >= bootLines.length) {
-    setTimeout(() => { pre.classList.add('done'); start(); }, 480);
-    return;
+let loadP = 0;
+const loadTick = setInterval(() => {
+  loadP = Math.min(100, loadP + 14 + Math.random() * 18);
+  if (fill) fill.style.width = loadP + '%';
+  if (loadP >= 100) {
+    clearInterval(loadTick);
+    setTimeout(() => { pre.classList.add('done'); start(); }, 240);
   }
-  const [txt, val, cls] = bootLines[li];
-  const row = document.createElement('div');
-  row.className = 'ln';
-  row.innerHTML = txt
-    ? `<span>${txt}</span>${val ? `<span class="${cls}">${val}</span>` : ''}`
-    : '&nbsp;';
-  logEl.appendChild(row);
-  requestAnimationFrame(() => row.classList.add('show'));
-  li++;
-  const p = Math.round(li / bootLines.length * 100);
-  fill.style.width = p + '%';
-  if (pctEl) pctEl.textContent = p + '%';
-  setTimeout(bootStep, li === 1 ? 320 : 120 + Math.random() * 90);
-}
-bootStep();
+}, 70);
 
 /* =====================================================================
    START (after preload)
