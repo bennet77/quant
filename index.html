@@ -518,6 +518,32 @@ h2{
 .cta-list li{font-family:var(--mono);font-size:12.5px;color:var(--txt-2)}
 .cta-note{font-family:var(--mono);font-size:11px;color:var(--txt-3);margin-top:18px;letter-spacing:.06em}
 
+.price-tiers{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin:30px 0 6px;
+}
+.price-tier{
+  position:relative;border:1px solid var(--line);border-radius:8px;
+  background:color-mix(in srgb,var(--panel-2) 70%,transparent);
+  padding:16px 8px 14px;
+}
+.price-tier--best{
+  border-color:color-mix(in srgb,var(--amber) 55%,var(--line));
+  background:color-mix(in srgb,var(--amber) 8%,var(--panel-2));
+}
+.price-tier__badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--amber);color:#0a0700;font-family:var(--mono);
+  font-size:9px;font-weight:700;letter-spacing:.08em;
+  padding:3px 9px;border-radius:20px;white-space:nowrap;
+}
+.price-tier__len{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);letter-spacing:.06em;text-transform:uppercase}
+.price-tier__amt{font-family:var(--head);font-weight:700;font-size:26px;color:#fff;margin:6px 0 4px}
+.price-tier__per{font-family:var(--mono);font-size:10px;color:var(--txt-3)}
+@media (max-width:640px){
+  .price-tiers{grid-template-columns:repeat(2,1fr)}
+}
+
 /* ====================== FOOTER ====================== */
 .footer{
   position:relative;z-index:5;border-top:1px solid var(--line-soft);
@@ -1090,7 +1116,29 @@ a,button,.btn,.fn,.rail__item,.pillar__link{cursor:pointer}
         Voller Zugriff auf Macro-Desk, ICT-Engine, Visual-Backtester, Journal
         und Echtzeit-Daten. Sofort einsatzbereit nach dem Kauf.
       </p>
-      <div class="price"><span class="price__cur">€</span><span class="price__num" id="priceNum">—</span><span class="price__per">/ Lizenz</span></div>
+      <div class="price-tiers">
+        <div class="price-tier">
+          <div class="price-tier__len">1 Monat</div>
+          <div class="price-tier__amt">29&nbsp;€</div>
+          <div class="price-tier__per">29,00&nbsp;€/Monat</div>
+        </div>
+        <div class="price-tier">
+          <div class="price-tier__len">3 Monate</div>
+          <div class="price-tier__amt">79&nbsp;€</div>
+          <div class="price-tier__per">26,33&nbsp;€/Monat</div>
+        </div>
+        <div class="price-tier price-tier--best">
+          <div class="price-tier__badge">Beliebt</div>
+          <div class="price-tier__len">9 Monate</div>
+          <div class="price-tier__amt">199&nbsp;€</div>
+          <div class="price-tier__per">22,11&nbsp;€/Monat</div>
+        </div>
+        <div class="price-tier">
+          <div class="price-tier__len">12 Monate</div>
+          <div class="price-tier__amt">239&nbsp;€</div>
+          <div class="price-tier__per">19,92&nbsp;€/Monat</div>
+        </div>
+      </div>
       <ul class="cta-list">
         <li>✓ Macro-Quant-Desk · 15+ Panels</li>
         <li>✓ Integrierte ICT-Konzepte</li>
@@ -1102,7 +1150,7 @@ a,button,.btn,.fn,.rail__item,.pillar__link{cursor:pointer}
       <a class="btn btn--solid btn--big" href="#" data-buy id="buyBtn">
         Jetzt über Gumroad sichern <span class="arrow">→</span>
       </a>
-      <p class="cta-note">Sichere Abwicklung über Gumroad · Sofort-Zugang</p>
+      <p class="cta-note">Laufzeit beim Kauf auf Gumroad wählbar · einmalige Zahlung, keine automatische Verlängerung · Sofort-Zugang</p>
     </div>
   </section>
 
@@ -1461,10 +1509,7 @@ function initScene(canvas) {
    ⚙️  KONFIGURATION — hier deine echten Werte eintragen
    ===================================================================== */
 const CONFIG = {
-  // 👉 Deinen Gumroad-Produktlink hier einsetzen:
-  GUMROAD_URL: 'https://gumroad.com/l/DEIN-PRODUKT',
-  // Preis-Anzeige (nur Optik auf der Seite):
-  PRICE: '149',
+  GUMROAD_URL: 'https://bennetcraft8.gumroad.com/l/auvrey',
 };
 /* ===================================================================== */
 
@@ -1495,7 +1540,6 @@ let bandSkewTarget = 0;
 
 /* ---------------- Apply config ---------------- */
 $$('[data-buy]').forEach(a => { a.href = CONFIG.GUMROAD_URL; a.target = '_blank'; a.rel = 'noopener'; });
-const priceNum = $('#priceNum'); if (priceNum) priceNum.textContent = CONFIG.PRICE;
 const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 /* =====================================================================
