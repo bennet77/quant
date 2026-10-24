@@ -16,7 +16,7 @@
   </div>
 
   <h1>Datenschutzerklärung</h1>
-  <div class="stand">Stand: Juni 2026</div>
+  <div class="stand">Stand: Oktober 2026</div>
 
   <h2>1. Verantwortlicher</h2>
   <p>
@@ -26,6 +26,8 @@
   </p>
 
   <h2>2. Überblick</h2>
+  <p>Diese Erklärung gilt für die Website auvrey.de (Abschnitte 3–7) und für die Software
+     <strong>Auvrey Terminal</strong> (Abschnitt 8).</p>
   <p>Diese Website (auvrey.de) ist eine reine Informations-/Marketingseite. Sie setzt <strong>keine
      Cookies</strong>, nutzt <strong>kein Tracking und keine Analyse-Tools</strong> und enthält
      <strong>kein Kontaktformular</strong>. Es werden nur die technisch notwendigen Daten verarbeitet,
@@ -44,21 +46,95 @@
   <p>Die verwendeten Schriftarten werden <strong>lokal von unserem Server ausgeliefert</strong>. Es
      erfolgt <strong>keine</strong> Verbindung zu Google Fonts und keine Übertragung deiner Daten an Google.</p>
 
-  <h2>5. Eingebundene Skripte (CDN)</h2>
-  <p>Für Darstellung und Animationen lädt die Seite JavaScript-Bibliotheken (u. a. Three.js, GSAP,
-     Lenis) vom Content-Delivery-Network <strong>jsDelivr</strong>. Beim Laden wird deine IP-Adresse an
-     den CDN-Anbieter übertragen, technisch notwendig zur Auslieferung dieser Dateien. Rechtsgrundlage
-     ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer funktionsfähigen, performanten
-     Darstellung).</p>
+  <h2>5. Live-Kurse in der Kopfleiste</h2>
+  <p>Die Seite lädt keine Skripte von fremden Servern. Für die Kursleiste oben und die 3D-Orderbuch-Darstellung ruft dein
+     Browser öffentliche Kurs- und Orderbuchdaten direkt bei der Kryptobörse <strong>Binance</strong>
+     (api.binance.com) ab — alle 2 bis 15 Sekunden, solange die Seite geöffnet ist. Dabei wird technisch bedingt deine IP-Adresse an Binance übertragen; Binance
+     kann seinen Sitz bzw. Server außerhalb der EU haben. Es werden keine Cookies gesetzt und keine
+     weiteren Daten übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+     an der Anzeige aktueller Marktdaten). Schlägt der Abruf fehl oder wird er blockiert, wird die
+     Kursleiste ausgeblendet und die 3D-Darstellung zeigt eine Simulation.</p>
 
-  <h2>6. Kauf über Gumroad</h2>
+  <h2>6. Anfrage für einen Testzugang</h2>
+  <p>Wenn du über das Formular einen kostenlosen Testzugang anfragst, verarbeiten wir die Angaben, die du
+     dort machst: Vor- und Nachname, E-Mail-Adresse, die angegebenen Social-Media-Profile, ungefähre
+     Follower-Zahl, Angaben zu deinen Inhalten sowie deine Zusagen (Video, Teilen). Zweck ist die Prüfung
+     und Bearbeitung deiner Anfrage, der Versand des Zugangscodes und die Abstimmung zum vereinbarten Video.
+     Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Durchführung vorvertraglicher Maßnahmen auf deine
+     Anfrage). Die angegebenen Profile sehen wir uns an, um zu prüfen, ob du Trading-Inhalte veröffentlichst.</p>
+  <p>Für den Versand des Formulars nutzen wir den Dienst <strong>FormSubmit</strong> (formsubmit.co), der die
+     Angaben per E-Mail an uns weiterleitet. Dabei werden deine Angaben und deine IP-Adresse an FormSubmit
+     übertragen; der Dienst kann Server außerhalb der EU (z. B. in den USA) nutzen. Wir speichern
+     Anfragen, solange es für die Bearbeitung und die Zusammenarbeit nötig ist, und löschen sie spätestens
+     12 Monate nach Ende des Testzugangs, sofern keine gesetzlichen Aufbewahrungspflichten bestehen. Du
+     kannst jederzeit Auskunft und Löschung verlangen.</p>
+
+  <h2>7. Kauf über Gumroad</h2>
   <p>Der Erwerb einer Lizenz erfolgt nicht auf dieser Website, sondern über den externen Anbieter
      <strong>Gumroad, Inc.</strong> (USA). Beim Klick auf einen Kauf-Button wirst du zu Gumroad
      weitergeleitet; ab diesem Zeitpunkt gilt die Datenschutzerklärung von Gumroad
      (<a href="https://gumroad.com/privacy" target="_blank" rel="noopener">gumroad.com/privacy</a>).
      Die Zahlungsabwicklung und damit verbundene Datenverarbeitung erfolgt durch Gumroad.</p>
 
-  <h2>7. Deine Rechte</h2>
+  <h2>8. Software „Auvrey Terminal“</h2>
+  <h3>7.1 Daten bleiben auf deinem Rechner</h3>
+  <p>Das Terminal hat <strong>kein Benutzerkonto auf unseren Servern</strong> und sendet <strong>keine
+     Nutzungs- oder Analysedaten</strong> an uns. Einstellungen, Arbeitsplätze, Alarme, Notizen,
+     Watchlists, Depot-Buchungen, die lokale Kursdatenbank und das Fehlerprotokoll werden ausschließlich
+     lokal gespeichert (Windows: <code>%APPDATA%\Auvrey</code>). Zugangsdaten wie Telegram-Token,
+     Discord-Webhook oder eigene API-Schlüssel werden mit der Windows-Datenschutz-API verschlüsselt
+     abgelegt. Eine optionale Nutzungsstatistik wird nur lokal gezählt und nur dann übermittelt, wenn du
+     sie selbst einem Fehlerbericht beilegst.</p>
+
+  <h3>7.2 Abruf von Marktdaten</h3>
+  <p>Für Kurse, Nachrichten und Wirtschaftsdaten ruft das Terminal öffentliche Schnittstellen
+     <strong>direkt von deinem Rechner</strong> ab, u. a. Binance, Yahoo Finance, Coinbase, Nasdaq,
+     Deribit, OKX, Kraken, die Federal Reserve Bank of St. Louis (FRED), die Europäische Zentralbank,
+     die CFTC, DefiLlama, IWF, Weltbank, OpenFIGI (Wertpapiersuche nach WKN/ISIN), ForexFactory-Kalender
+     sowie die RSS-Feeds der angezeigten Nachrichtenquellen und Google News. Dabei werden technisch
+     bedingt deine <strong>IP-Adresse</strong>, das abgefragte Symbol bzw. der Suchbegriff und übliche
+     Verbindungsdaten an den jeweiligen Anbieter übermittelt; teils mit Sitz außerhalb der EU. Wir
+     erhalten diese Daten nicht. Es gelten die Datenschutzbestimmungen der Anbieter. Rechtsgrundlage ist
+     Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung der von dir genutzten Funktionen).</p>
+
+  <h3>7.3 Lizenzprüfung und Testversion</h3>
+  <p>Zur Prüfung deines Lizenzschlüssels sendet das Terminal den Schlüssel an die Schnittstelle von
+     <strong>Gumroad, Inc.</strong> (USA), bei der du die Lizenz erworben hast (Art. 6 Abs. 1 lit. b
+     DSGVO). Die 7-Tage-Testversion wird nur lokal verwaltet; dafür wird eine aus der Windows-Geräte-ID
+     abgeleitete Prüfsumme auf deinem Rechner gespeichert, aber nicht übertragen.</p>
+
+  <h3>7.4 Updates</h3>
+  <p>Einmal täglich fragt das Terminal die Datei <code>version.json</code> auf auvrey.de (GitHub Pages,
+     siehe Abschnitt 3) bzw. ersatzweise bei GitHub ab; beim Herunterladen eines Updates wird die
+     Installationsdatei vom angegebenen Speicherort geladen. Übertragen werden dabei IP-Adresse und
+     Verbindungsdaten. Die automatische Prüfung lässt sich unter PREFS → UPDATES abschalten
+     (Art. 6 Abs. 1 lit. f DSGVO — berechtigtes Interesse an sicherer, aktueller Software).</p>
+
+  <h3>7.5 KI-Erklärungen (optional)</h3>
+  <p>Nur wenn du eine KI-Funktion aktiv nutzt (Knopf „✦ KI“, F3 oder den Hilfe-Chat), wird der Inhalt
+     des betreffenden Fensters (Kennzahlen, Tabellen, Symbol) zusammen mit deiner Frage an einen
+     KI-Dienst übertragen: an <strong>Groq, Inc.</strong> (USA) — direkt, wenn du einen eigenen
+     Schlüssel hinterlegt hast, sonst über einen von uns betriebenen Weiterleitungsdienst bei
+     <strong>Cloudflare, Inc.</strong>, der zur Missbrauchsbegrenzung deinen Lizenzschlüssel (bzw. eine
+     gehashte Geräte-ID in der Testversion) prüft und Anfragen je Tag zählt, aber keine Inhalte speichert.
+     Bei der lokalen KI (Ollama) verlässt nichts deinen Rechner. Bitte gib in KI-Fragen keine
+     personenbezogenen Daten ein. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung beim ersten
+     Aufruf), jederzeit widerrufbar, indem du die Funktion nicht mehr nutzt.</p>
+
+  <h3>7.6 Benachrichtigungen per Telegram oder Discord (optional)</h3>
+  <p>Richtest du in der Alarm-Zentrale Telegram oder Discord ein, werden ausgelöste Alarme (Symbol,
+     Kurs, Bedingung, Uhrzeit) an <strong>Telegram</strong> (Telegram Messenger Inc.) bzw.
+     <strong>Discord</strong> (Discord Inc., USA) gesendet und dort deinem Konto zugestellt. Es gelten
+     deren Datenschutzbestimmungen. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO.</p>
+
+  <h3>7.7 Fehlerberichte</h3>
+  <p>Ein Fehlerbericht wird nur auf deine Veranlassung erstellt (Befehl BUG). Er enthält das
+     Fehlerprotokoll, Programm- und Systemversion sowie auf Wunsch die lokale Nutzungsstatistik —
+     keine Kurse, Depotdaten, Schlüssel oder Passwörter. Du entscheidest selbst, ob du ihn per E-Mail an
+     uns sendest. Wir nutzen ihn ausschließlich zur Fehlerbehebung und löschen ihn spätestens zwölf
+     Monate nach Abschluss der Bearbeitung (Art. 6 Abs. 1 lit. b und f DSGVO).</p>
+
+  <h2>9. Deine Rechte</h2>
   <p>Du hast nach der DSGVO das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung
      (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) sowie ein
      Widerspruchsrecht (Art. 21). Zur Ausübung genügt eine Nachricht an die oben genannte E-Mail-Adresse.</p>
@@ -66,7 +142,7 @@
      u. a. die Aufsichtsbehörde deines Bundeslandes bzw. des Sitzes des Verantwortlichen
      (Unabhängiges Datenschutzzentrum Saarland).</p>
 
-  <h2>8. Aktualität</h2>
+  <h2>10. Aktualität</h2>
   <p>Wir passen diese Datenschutzerklärung an, sobald sich die Datenverarbeitung ändert (z. B. bei
      Ergänzung von Funktionen).</p>
 
